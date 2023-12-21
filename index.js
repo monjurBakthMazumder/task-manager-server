@@ -43,6 +43,23 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/stats/:email", async (req, res) => {
+      const email = req.params?.email;
+      const todo = await listCollection.countDocuments({
+        status: "todo",
+        email,
+      });
+      const ongoing = await listCollection.countDocuments({
+        status: "ongoing",
+        email,
+      });
+      const completed = await listCollection.countDocuments({
+        status: "completed",
+        email,
+      });
+      res.send({ todo, ongoing, completed });
+    });
+
     app.post("/lists", async (req, res) => {
       const list = req.body;
       console.log(list);
