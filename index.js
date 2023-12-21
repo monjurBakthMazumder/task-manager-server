@@ -25,6 +25,18 @@ async function run() {
     await client.connect();
     const listCollection = client.db("taskManagerBD").collection("list");
 
+    app.get("/list", async (req, res) => {
+      const email = req.query?.email;
+      const status = req.query?.status;
+      const query = {
+        email,
+        status,
+      };
+      console.log("object: " + email, status);
+      const result = await listCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/list", async (req, res) => {
       const list = req.body;
       console.log(list);
