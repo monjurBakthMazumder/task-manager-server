@@ -36,6 +36,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/lists/:id", async (req, res) => {
+      const id = req.params?.id;
+      const cursor = { _id: new ObjectId(id) };
+      const result = await listCollection.findOne(cursor);
+      res.send(result);
+    });
+
     app.post("/lists", async (req, res) => {
       const list = req.body;
       console.log(list);
@@ -47,6 +54,21 @@ async function run() {
       const id = req.params?.id;
       const cursor = { _id: new ObjectId(id) };
       const result = await listCollection.deleteOne(cursor);
+      res.send(result);
+    });
+
+    app.put("/lists/:id", async (req, res) => {
+      const id = req.params?.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedTask = {
+        $set: {
+          title: req?.body?.title,
+          description: req?.body?.description,
+          date: req?.body?.date,
+          priority: req?.body?.priority,
+        },
+      };
+      const result = await listCollection.updateOne(filter, updatedTask);
       res.send(result);
     });
 
