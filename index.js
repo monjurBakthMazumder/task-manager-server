@@ -22,7 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const listCollection = client.db("taskManagerBD").collection("list");
 
     app.get("/lists", async (req, res) => {
@@ -88,9 +88,21 @@ async function run() {
       const result = await listCollection.updateOne(filter, updatedTask);
       res.send(result);
     });
+    app.put("/lists-status/:id", async (req, res) => {
+      const id = req.params?.id;
+      const filter = { _id: new ObjectId(id) };
+      console.log(req.body.status);
+      const updatedTask = {
+        $set: {
+          status: req?.body?.status,
+        },
+      };
+      const result = await listCollection.updateOne(filter, updatedTask);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
